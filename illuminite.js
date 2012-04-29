@@ -40,18 +40,29 @@
 		var lightDir = [0,0,0],
 			lightDistance = 0,
 			squaredLightDistance = 0,
-			diffuseIntensity = 0
+			diffuseIntensity = 0,
 			diffuseOut = [],
 			halfVector = [],
 			halfVectorLength = 0,
 			specularIntensity = 0,
 			halfVectorDotProduct = 0,
-			specularOut = [];
+			specularOut = [],
+			vertexFacesLight;
 		
 		specularHardness = specularHardness && !isNaN(specularHardness) ? specularHardness : 10;
 		
 		lights.forEach(function(light) {
-			if (light.diffusePower > 0) {
+			
+			// Can't have light hitting vertexes it doesn't actually strike...
+			// Have smooth shading ready if you leave this in, as it makes rough geometry
+			// look jagged indeed...
+			vertexFacesLight = [
+				(vertexNormal[0] * light.position[0]) +
+				(vertexNormal[1] * light.position[1]) +
+				(vertexNormal[2] * light.position[2])
+			];
+			
+			if (light.diffusePower > 0 && vertexFacesLight > 0) {
 				// Find the vector between the light and vertex being calculated
 				lightDir = [
 					light.position[0] - vertex[0],
@@ -121,9 +132,15 @@
 					Math.abs(specularIntensity * light.color[2] * light.specularPower / squaredLightDistance)
 				]
 				
+				// Add together diffuse component for this light
+				lightModelOut.diffuse[0] += diffuseOut[0];
+				lightModelOut.diffuse[1] += diffuseOut[1];
+				lightModelOut.diffuse[2] += diffuseOut[2];
 				
-				lightModelOut.diffuse = diffuseOut;
-				lightModelOut.specular = specularOut;
+				// Add together specular component for this light
+				lightModelOut.specular[0] += specularOut[0];
+				lightModelOut.specular[1] += specularOut[1];
+				lightModelOut.specular[2] += specularOut[2];
 			}
 		});
 		
