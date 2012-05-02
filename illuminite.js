@@ -32,12 +32,20 @@
 	
 	Illuminite.LightModel.prototype = {
 		"constructor": function LightModel(){},
+		"rgb": function() {
+			return [
+				Math.round(this.specular[0] + this.diffuse[0]),
+				Math.round(this.specular[1] + this.diffuse[1]),
+				Math.round(this.specular[2] + this.diffuse[2])
+			];
+		}
 	};
 	
 	// Calculate Blinn Phong for vertex.
 	Illuminite.calcBlinnPhong = function(lights,camera,vertex,vertexNormal,specularHardness) {
 		var lightModelOut = new Illuminite.LightModel();
-		var lightDir = [0,0,0],
+		var light,
+			lightDir = [0,0,0],
 			lightDistance = 0,
 			squaredLightDistance = 0,
 			diffuseIntensity = 0,
@@ -49,20 +57,17 @@
 			specularOut = [],
 			vertexFacesLight;
 		
-		specularHardness = specularHardness && !isNaN(specularHardness) ? specularHardness : 10;
+		specularHardness = specularHardness && !isNaN(specularHardness) ? specularHardness : 100;
 		
-		lights.forEach(function(light) {
+		for (var lightIndex = 0; lightIndex < lights.length; lightIndex++) {
+			light = lights[lightIndex];
 			
-			// Can't have light hitting vertexes it doesn't actually strike...
-			// Have smooth shading ready if you leave this in, as it makes rough geometry
-			// look jagged indeed...
-			vertexFacesLight = [
-				(vertexNormal[0] * light.position[0]) +
-				(vertexNormal[1] * light.position[1]) +
-				(vertexNormal[2] * light.position[2])
-			];
+			var vertexDotProduct =
+				(light.position[0] * vertexNormal[0]) +
+				(light.position[1] * vertexNormal[1]) +
+				(light.position[2] * vertexNormal[2]);
 			
-			if (light.diffusePower > 0 && vertexFacesLight > 0) {
+			if (light.diffusePower > 0 && vertexDotProduct > 0) {
 				// Find the vector between the light and vertex being calculated
 				lightDir = [
 					light.position[0] - vertex[0],
@@ -71,15 +76,15 @@
 				];
 				
 				// Get the distance between the light and vertex from it
-				lightDistance = Math.sqrt(Math.pow(lightDir[0],2) + Math.pow(lightDir[1],2) + Math.pow(lightDir[2],2));
+				lightDistance = Math.sqrt((lightDir[0] * lightDir[0]) + (lightDir[1] * lightDir[1]) + (lightDir[2] * lightDir[2]));
 				
 				// Multiply for inverse square wave attenuation law (Will optimise out in future, once this is working)
 				squaredLightDistance = lightDistance * lightDistance;
 				
 				// Normalise distance vector
-				lightDir = lightDir.map(function (component) {
-					return component / lightDistance;
-				});
+				lightDir[0] /= lightDistance;
+				lightDir[1] /= lightDistance;
+				lightDir[2] /= lightDistance;
 				
 				// Calculate intensity of diffuse component
 				diffuseIntensity =
@@ -108,10 +113,10 @@
 				];
 				
 				// Find length for normalisation
-				halfVectorLength = Math.sqrt(Math.pow(halfVector[0],2) + Math.pow(halfVector[1],2) + Math.pow(halfVector[2],2));
-				halfVector = halfVector.map(function (component) {
-					return component / halfVectorLength;
-				});
+				halfVectorLength = Math.sqrt((halfVector[0] * halfVector[0]) + (halfVector[1] * halfVector[1]) + (halfVector[2] * halfVector[2]));
+				halfVector[0] /= halfVectorLength;
+				halfVector[1] /= halfVectorLength;
+				halfVector[2] /= halfVectorLength;
 				
 				// Get dot product of vertex normal and half vector
 				halfVectorDotProduct =
@@ -142,7 +147,7 @@
 				lightModelOut.specular[1] += specularOut[1];
 				lightModelOut.specular[2] += specularOut[2];
 			}
-		});
+		}
 		
 		return lightModelOut;
 	};
