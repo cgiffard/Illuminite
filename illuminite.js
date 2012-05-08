@@ -34,9 +34,9 @@
 		"constructor": function LightModel(){},
 		"rgb": function() {
 			return [
-				Math.round(this.specular[0] + this.diffuse[0]),
-				Math.round(this.specular[1] + this.diffuse[1]),
-				Math.round(this.specular[2] + this.diffuse[2])
+				(this.specular[0] + this.diffuse[0])|0,
+				(this.specular[1] + this.diffuse[1])|0,
+				(this.specular[2] + this.diffuse[2])|0
 			];
 		}
 	};
