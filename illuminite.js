@@ -97,9 +97,9 @@
 				
 				// Get diffuse colour
 				diffuseOut = [
-					Math.abs(diffuseIntensity * light.color[0] * light.diffusePower / squaredLightDistance),
-					Math.abs(diffuseIntensity * light.color[1] * light.diffusePower / squaredLightDistance),
-					Math.abs(diffuseIntensity * light.color[2] * light.diffusePower / squaredLightDistance)
+					diffuseIntensity * light.color[0] * light.diffusePower / squaredLightDistance,
+					diffuseIntensity * light.color[1] * light.diffusePower / squaredLightDistance,
+					diffuseIntensity * light.color[2] * light.diffusePower / squaredLightDistance
 				];
 				
 				// Specular reflection part ----------------------------
@@ -132,9 +132,9 @@
 				
 				// Calculate specular component...
 				specularOut = [
-					Math.abs(specularIntensity * light.color[0] * light.specularPower / squaredLightDistance),
-					Math.abs(specularIntensity * light.color[1] * light.specularPower / squaredLightDistance),
-					Math.abs(specularIntensity * light.color[2] * light.specularPower / squaredLightDistance)
+					specularIntensity * light.color[0] * light.specularPower / squaredLightDistance,
+					specularIntensity * light.color[1] * light.specularPower / squaredLightDistance,
+					specularIntensity * light.color[2] * light.specularPower / squaredLightDistance
 				]
 				
 				// Add together diffuse component for this light
