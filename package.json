@@ -1,0 +1,28 @@
+{
+  "name": "illuminite",
+  "version": "0.0.1",
+  "description": "Blinn-phong illumination model with support for multiple light types",
+  "main": "illuminite.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cgiffard/Illuminite.git"
+  },
+  "keywords": [
+    "blinn",
+    "phong",
+    "blinn-phong",
+    "illumination",
+    "lighting",
+    "light",
+    "3d",
+    "shading"
+  ],
+  "author": "Christopher Giffard <christopher.giffard@cgiffard.com>",
+  "license": "BSD"
+}
